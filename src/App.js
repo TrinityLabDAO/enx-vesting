@@ -5,7 +5,8 @@ const Web3 = require("web3");
 let token = '0xe0dbb927165c1611a8639e375649b85cc790a702'
 
 let pairs = {
-    '0x91748D8F524c49700FF944480782A77046707fab': '0x6cb1E588b18781783F5Ab4E639Ff1A3f87603E76'
+    '0x91748D8F524c49700FF944480782A77046707fab': '0x6cb1E588b18781783F5Ab4E639Ff1A3f87603E76',
+    '0x40e8ba5285797655f5ca14c9c157536f1d73db20': '0x33134E04D586513B57F558eC70eE6616ec87F77e'
 }
 
 let ethContract
@@ -19,8 +20,6 @@ let App = () => {
     let [address, setAddress] = useState('0x')
 
     let [amount, setAmount] = useState(0.0)
-
-    let [contract, setContract] = useState({})
 
     const release = async () => {
         if (ethContract) {
