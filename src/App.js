@@ -204,7 +204,7 @@ let App = () => {
 
         if (address === '0x') {
             ethEnabled().then(r => {})
-            interval = setInterval(() => setReleasableAmount(contract), 5000);
+            interval = setInterval(() => setReleasableAmount(ethContract), 5000);
         }
 
         return () => {
