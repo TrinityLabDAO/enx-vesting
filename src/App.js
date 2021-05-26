@@ -1,4 +1,5 @@
 import {useEffect, useState} from "react";
+import {ABI, ABI2} from "./ABI";
 
 const Web3 = require("web3");
 
@@ -21,6 +22,8 @@ let App = () => {
 
     let [amount, setAmount] = useState(0.0)
 
+    let [contractBalance, setContractBalance] = useState(0.0)
+
     const release = async () => {
         if (ethContract) {
             await ethContract.methods.release(token).send({from: address})
@@ -40,136 +43,11 @@ let App = () => {
             setAddress(accountAddress)
             console.log(accountAddress)
 
-            let abi = [{
-                "inputs": [{
-                    "internalType": "address",
-                    "name": "beneficiary_",
-                    "type": "address"
-                }, {"internalType": "uint256", "name": "start_", "type": "uint256"}, {
-                    "internalType": "uint256",
-                    "name": "cliff_",
-                    "type": "uint256"
-                }, {"internalType": "uint256", "name": "duration_", "type": "uint256"}, {
-                    "internalType": "bool",
-                    "name": "revocable_",
-                    "type": "bool"
-                }], "stateMutability": "nonpayable", "type": "constructor"
-            }, {
-                "anonymous": false,
-                "inputs": [{
-                    "indexed": true,
-                    "internalType": "address",
-                    "name": "previousOwner",
-                    "type": "address"
-                }, {"indexed": true, "internalType": "address", "name": "newOwner", "type": "address"}],
-                "name": "OwnershipTransferred",
-                "type": "event"
-            }, {
-                "anonymous": false,
-                "inputs": [{"indexed": false, "internalType": "address", "name": "token", "type": "address"}],
-                "name": "TokenVestingRevoked",
-                "type": "event"
-            }, {
-                "anonymous": false,
-                "inputs": [{
-                    "indexed": false,
-                    "internalType": "address",
-                    "name": "token",
-                    "type": "address"
-                }, {"indexed": false, "internalType": "uint256", "name": "amount", "type": "uint256"}],
-                "name": "TokensReleased",
-                "type": "event"
-            }, {
-                "inputs": [],
-                "name": "beneficiary",
-                "outputs": [{"internalType": "address", "name": "", "type": "address"}],
-                "stateMutability": "view",
-                "type": "function"
-            }, {
-                "inputs": [],
-                "name": "cliff",
-                "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}],
-                "stateMutability": "view",
-                "type": "function"
-            }, {
-                "inputs": [],
-                "name": "duration",
-                "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}],
-                "stateMutability": "view",
-                "type": "function"
-            }, {
-                "inputs": [],
-                "name": "owner",
-                "outputs": [{"internalType": "address", "name": "", "type": "address"}],
-                "stateMutability": "view",
-                "type": "function"
-            }, {
-                "inputs": [{"internalType": "contract IERC20", "name": "token", "type": "address"}],
-                "name": "releasableAmount",
-                "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}],
-                "stateMutability": "view",
-                "type": "function"
-            }, {
-                "inputs": [{"internalType": "contract IERC20", "name": "token", "type": "address"}],
-                "name": "release",
-                "outputs": [],
-                "stateMutability": "nonpayable",
-                "type": "function"
-            }, {
-                "inputs": [{"internalType": "address", "name": "token", "type": "address"}],
-                "name": "released",
-                "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}],
-                "stateMutability": "view",
-                "type": "function"
-            }, {
-                "inputs": [],
-                "name": "renounceOwnership",
-                "outputs": [],
-                "stateMutability": "nonpayable",
-                "type": "function"
-            }, {
-                "inputs": [],
-                "name": "revocable",
-                "outputs": [{"internalType": "bool", "name": "", "type": "bool"}],
-                "stateMutability": "view",
-                "type": "function"
-            }, {
-                "inputs": [{"internalType": "contract IERC20", "name": "token", "type": "address"}],
-                "name": "revoke",
-                "outputs": [],
-                "stateMutability": "nonpayable",
-                "type": "function"
-            }, {
-                "inputs": [{"internalType": "address", "name": "token", "type": "address"}],
-                "name": "revoked",
-                "outputs": [{"internalType": "bool", "name": "", "type": "bool"}],
-                "stateMutability": "view",
-                "type": "function"
-            }, {
-                "inputs": [],
-                "name": "start",
-                "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}],
-                "stateMutability": "view",
-                "type": "function"
-            }, {
-                "inputs": [{"internalType": "address", "name": "newOwner", "type": "address"}],
-                "name": "transferOwnership",
-                "outputs": [],
-                "stateMutability": "nonpayable",
-                "type": "function"
-            }, {
-                "inputs": [{"internalType": "contract IERC20", "name": "token", "type": "address"}],
-                "name": "vestedAmount",
-                "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}],
-                "stateMutability": "view",
-                "type": "function"
-            }]
-
             if (pairs[accountAddress]) {
 
                 console.log(await window.web3.eth.getBalance(pairs[accountAddress]))
 
-                ethContract = new window.web3.eth.Contract(abi, pairs[accountAddress])
+                ethContract = new window.web3.eth.Contract(ABI2, pairs[accountAddress])
 
                 // setContract(ethContract);
 
@@ -179,21 +57,39 @@ let App = () => {
                 setReleasableAmount(ethContract)
             }
 
+            if (ethContract.methods.balanceOf)
+                ethContract.methods.balanceOf(token).call((err, val) => {
+                    setContractBalance(val / 1e10)
+                    console.log(val)
+                })
+
             return true;
         }
         return false;
     }
 
-    let setReleasableAmount = () => {
+    let setReleasableAmount = async () => {
 
         // console.log('setReleasableAmount')
         // console.log(ethContract)
 
         if (ethContract) {
+
             ethContract.methods.releasableAmount(token).call((err, val) => {
                 setAmount(val / 1e10)
                 console.log(val / 1e10)
             })
+
+
+            // ethContract.methods.balanceOf(token).call((err, val) => {
+            //     setContractBalance(val / 1e10)
+            //     console.log(val)
+            // })
+
+            // ethContract.methods.vestedAmount(token).call((err, val) => {
+            //     setContractBalance(val / 1e10)
+            //     console.log(val / 1e10)
+            // })
         }
     }
 
@@ -202,8 +98,10 @@ let App = () => {
         let interval
 
         if (address === '0x') {
-            ethEnabled().then(r => {})
+            ethEnabled().then(r => {
+            })
             interval = setInterval(() => setReleasableAmount(ethContract), 5000);
+            // console.log(balance)
         }
 
         return () => {
@@ -221,6 +119,7 @@ let App = () => {
             <div>{address}</div>
             <div>Contract Address</div>
             <div>{pairs[address] ? pairs[address] : 'No'}</div>
+            <div>Contract balance: {contractBalance} ENX</div>
             <div className={'button'} onClick={release}>Release: {amount}</div>
         </div>
     );
