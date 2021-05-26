@@ -10,10 +10,6 @@ let ethContract
 
 let App = () => {
 
-    // let connectMetaMask = () => {
-    //
-    // }
-
     let [address, setAddress] = useState('0x')
 
     let [amount, setAmount] = useState(0.0)
@@ -73,26 +69,11 @@ let App = () => {
 
     let setReleasableAmount = async () => {
 
-        // console.log('setReleasableAmount')
-        // console.log(ethContract)
-
         if (ethContract) {
-
             ethContract.methods.releasableAmount(token).call((err, val) => {
                 setAmount(val / 1e10)
                 console.log(val / 1e10)
             })
-
-
-            // ethContract.methods.balanceOf(token).call((err, val) => {
-            //     setContractBalance(val / 1e10)
-            //     console.log(val)
-            // })
-
-            // ethContract.methods.vestedAmount(token).call((err, val) => {
-            //     setContractBalance(val / 1e10)
-            //     console.log(val / 1e10)
-            // })
         }
     }
 
