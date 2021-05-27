@@ -2,6 +2,8 @@ import {useEffect, useState} from "react";
 import {ABI, ABI2} from "./ABI";
 import {addressContract} from "./contracts";
 
+console.log('0.0.2')
+
 const Web3 = require("web3");
 
 let token = '0xe0dbb927165c1611a8639e375649b85cc790a702'
@@ -30,15 +32,16 @@ let App = () => {
             await window.ethereum.send('eth_requestAccounts');
             window.web3 = new Web3(window.ethereum);
 
-            let accountAddress = (await window.web3.eth.getAccounts())[0] + ''
+            let accountAddress = (await window.web3.eth.getAccounts())[0]
             // let accountAddress = '0x40e8ba5285797655f5ca14c9c157536f1d73db20'
+            console.log(typeof accountAddress)
 
             setAddress(accountAddress)
             console.log(accountAddress)
             console.log(addressContract)
             console.log(addressContract[accountAddress])
 
-            if (addressContract.hasOwnProperty(accountAddress) && addressContract[accountAddress] !== 'TEST CONTRACT') {
+            if (addressContract.hasOwnProperty(accountAddress + '') && addressContract[accountAddress] !== 'TEST CONTRACT') {
 
                 console.log(addressContract[accountAddress])
 
@@ -63,6 +66,8 @@ let App = () => {
                         setContractBalance(val / 1e10)
                         console.log(val)
                     })
+            } else {
+                console.log('NO ADDRESS IN LIST')
             }
 
             return true;
