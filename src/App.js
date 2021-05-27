@@ -30,14 +30,15 @@ let App = () => {
             await window.ethereum.send('eth_requestAccounts');
             window.web3 = new Web3(window.ethereum);
 
-            let accountAddress = (await window.web3.eth.getAccounts())[0]
+            let accountAddress = (await window.web3.eth.getAccounts())[0] + ''
+            // let accountAddress = '0x40e8ba5285797655f5ca14c9c157536f1d73db20'
 
             setAddress(accountAddress)
             console.log(accountAddress)
 
             console.log(addressContract)
 
-            if (addressContract[accountAddress]) {
+            if (addressContract.hasOwnProperty('accountAddress') && addressContract[accountAddress] !== 'TEST CONTRACT') {
 
                 console.log(await window.web3.eth.getBalance(addressContract[accountAddress]))
 
@@ -82,8 +83,7 @@ let App = () => {
         let interval
 
         if (address === '0x') {
-            ethEnabled().then(r => {
-            })
+            ethEnabled().then(r => {})
             interval = setInterval(() => setReleasableAmount(ethContract), 5000);
             // console.log(balance)
         }
@@ -102,7 +102,7 @@ let App = () => {
             <div>Your Address</div>
             <div>{address}</div>
             <div>Contract Address</div>
-            <div>{addressContract[address] ? addressContract[address] : 'No'}</div>
+            <div>{addressContract[address] ? addressContract[address].toString() : 'No'}</div>
             <div>Contract balance: {contractBalance} ENX</div>
             <div className={'button'} onClick={release}>Release: {amount} ENX</div>
         </div>
