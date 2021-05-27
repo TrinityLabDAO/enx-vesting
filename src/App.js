@@ -35,10 +35,12 @@ let App = () => {
 
             setAddress(accountAddress)
             console.log(accountAddress)
-
             console.log(addressContract)
+            console.log(addressContract[accountAddress])
 
-            if (addressContract.hasOwnProperty('accountAddress') && addressContract[accountAddress] !== 'TEST CONTRACT') {
+            if (addressContract.hasOwnProperty(accountAddress) && addressContract[accountAddress] !== 'TEST CONTRACT') {
+
+                console.log(addressContract[accountAddress])
 
                 console.log(await window.web3.eth.getBalance(addressContract[accountAddress]))
 
