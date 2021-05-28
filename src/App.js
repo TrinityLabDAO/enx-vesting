@@ -66,6 +66,20 @@ let App = () => {
                         setContractBalance(val / 1e10)
                         console.log(val)
                     })
+
+                // detect Metamask account change
+                window.ethereum.on('accountsChanged', function (accounts) {
+                    console.log('accountsChanges', accounts);
+
+                });
+
+                // detect Network account change
+                window.ethereum.on('networkChanged', function (networkId) {
+                    console.log('networkChanged', networkId);
+                });
+
+                console.log(window.ethereum.net)
+
             } else {
                 console.log('NO ADDRESS IN LIST')
             }
