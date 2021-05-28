@@ -6,7 +6,7 @@ console.log('0.0.2')
 
 const Web3 = require("web3");
 
-let token = '0xe0dbb927165c1611a8639e375649b85cc790a702'
+let token = '0xd0d7a9f2021958e51d60d6966b7bbed9d1cb22b5'
 
 let ethContract
 
