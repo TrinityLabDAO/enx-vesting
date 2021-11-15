@@ -2,7 +2,7 @@ import {useEffect, useState} from "react";
 import {ABI, ABI2} from "./ABI";
 import {addressContract} from "./contracts";
 
-console.log('0.0.2')
+console.log('0.0.3')
 
 const Web3 = require("web3");
 
@@ -123,7 +123,10 @@ let App = () => {
         let list = []
         if (addressContract[address]) {
             for (let i = 0; i < addressContract[address].length; i++) {
-                list.push(<div className={(contractIndex === i ? 'contract select' : 'contract')} onClick={() => setContractIndex(i)}>{addressContract[address][i].toString()}</div>)
+                list.push(<div className={(contractIndex === i ? 'contract select' : 'contract')} onClick={() => {
+                    ethEnabled().then()
+                    setContractIndex(i)
+                }}>{addressContract[address][i].toString()}</div>)
             }
         }
 
