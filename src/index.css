@@ -56,3 +56,15 @@ body {
     font-size: 1.5rem;
     font-weight: 600;
 }
+
+.contract {
+    cursor: pointer;
+}
+
+.contract:hover {
+    color: rgba(180, 201, 65, 0.5);
+}
+
+.contract.select {
+    color: rgba(180, 201, 65, 0.8);
+}

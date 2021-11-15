@@ -18,6 +18,8 @@ let App = () => {
 
     let [contractBalance, setContractBalance] = useState(0.0)
 
+    let [contractIndex, setContractIndex] = useState(0)
+
     const release = async () => {
         if (ethContract) {
             await ethContract.methods.release(token).send({from: address})
@@ -41,15 +43,19 @@ let App = () => {
             console.log(addressContract)
             console.log(addressContract[accountAddress])
 
-            if (addressContract.hasOwnProperty(accountAddress + '') && addressContract[accountAddress] !== 'TEST CONTRACT') {
+            if (addressContract.hasOwnProperty(accountAddress + '')) {
 
-                console.log(addressContract[accountAddress])
+                let addressContractString = addressContract[accountAddress][contractIndex]
 
-                console.log(await window.web3.eth.getBalance(addressContract[accountAddress]))
+                console.log(accountAddress)
+
+                return
+
+                console.log(await window.web3.eth.getBalance(addressContractString))
 
                 let tokenContract = new window.web3.eth.Contract(ABI, token)
 
-                ethContract = new window.web3.eth.Contract(ABI2, addressContract[accountAddress])
+                ethContract = new window.web3.eth.Contract(ABI2, addressContractString)
 
                 // setContract(ethContract);
 
@@ -62,7 +68,7 @@ let App = () => {
                 console.log(tokenContract.methods)
 
                 if (tokenContract.methods.balanceOf)
-                    tokenContract.methods.balanceOf(addressContract[accountAddress]).call((err, val) => {
+                    tokenContract.methods.balanceOf(addressContractString).call((err, val) => {
                         setContractBalance(val / 1e10)
                         console.log(val)
                     })
@@ -104,7 +110,7 @@ let App = () => {
         let interval
 
         if (address === '0x') {
-            ethEnabled().then(r => {})
+            // ethEnabled().then(r => {})
             interval = setInterval(() => setReleasableAmount(ethContract), 5000);
             // console.log(balance)
         }
@@ -115,6 +121,17 @@ let App = () => {
         }
     }, [])
 
+    let renderList = () => {
+        let list = []
+        if (addressContract[address]) {
+            for (let i = 0; i < addressContract[address].length; i++) {
+                list.push(<div className={(contractIndex === i ? 'contract select' : 'contract')} onClick={() => setContractIndex(i)}>{addressContract[address][i].toString()}</div>)
+            }
+        }
+
+        return list
+    }
+
     return (
         <div className={'form'}>
             <div className={'title'}>Vesting</div>
@@ -123,7 +140,7 @@ let App = () => {
             <div>Your Address</div>
             <div>{address}</div>
             <div>Contract Address</div>
-            <div>{addressContract[address] ? addressContract[address].toString() : 'No'}</div>
+            {renderList()}
             <div>Contract balance: {contractBalance} ENX</div>
             <div className={'button'} onClick={release}>Release: {amount} ENX</div>
         </div>
