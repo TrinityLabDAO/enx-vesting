@@ -49,8 +49,6 @@ let App = () => {
 
                 console.log(accountAddress)
 
-                return
-
                 console.log(await window.web3.eth.getBalance(addressContractString))
 
                 let tokenContract = new window.web3.eth.Contract(ABI, token)
